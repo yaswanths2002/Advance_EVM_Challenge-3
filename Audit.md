@@ -1,40 +1,53 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+# Audit Report
 
-First, run the development server:
+### Contract Name : Storage Victim
+### Version       : 0.4.23
+### Done By       : Yaswanth Sirigiri 
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 1)Mutable State
+### Vulnerability :  Moderate
+The state variable which stores the address of the owner is left
+mutable. Since unnecessary updations to the owner might cause issues,it is recommended to make the state immutable.
+### Changes Recommended:
+Change the owner state declaration to `address immutable
+owner;`
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## 2)Constructor Syntax
+### Vulnerability :  Normal
+The syntax of the constructor has been changed from the contract
+name to 'constructor'.
+### Changes Recommended:
+Change the constructor signature from `function
+StorageVictim() public {...}` to `constructor() {...}`
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+## 3)Uninitialized Pointer Vulnerability
+### Vulnerability :  Severe
+The Storage Pointer str is Uninitialized. Due to this 'str.user'
+points to address `0` by default which is the contract owner’s address.
+### Changes Recommended:
+We can Initialize the `str` to `storages[msg.sender]` in the store function.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+### Small Changes:
+1)SPDX License: The license line could be added. The License
+comment line is a standard way to specify the license under which
+the contract is released
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+2)Parameter naming: The parameter `_amount` of the function
+store could be changed to `amount`. This naming convention is
+recommended by the solidity team
 
-## Learn More
+3)Uint to Uint256: Use uint256 for future-proof code. uint256
+provides better information about the size and adds clarity to the
+code. Also the size of uint might change in the further updates.
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Final Conclusion:
+The contract `StorageVictim` contains a critical vulnerability
+related to uninitialized pointers. The recommended update might be
+helpful in enhancing the security of the contract.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### Author: Yaswanth Sirigiri
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
